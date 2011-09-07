@@ -1,3 +1,4 @@
+#--
 # Copyright 2011 Jens Hausherr
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,31 +12,37 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+#++
 require 'prawn'
 require 'rqrcode'
 
-# Extension for Prawn::Document for rendering QR codes.
+# :title: Prawn/QRCode
 #
-# Author::    Jens Hausherr  (mailto:jabbrwcky@googlemail.com)
-# Copyright:: Copyright (c) 2011 Jens Hausherr
-# License::   Apache License, Version 2.0
+# :main: This is an extension for Prawn::Document to simplify rendering QR Codes.
+# The module registers itself as Prawn extension upon loading.
+#
+# *Author*::    Jens Hausherr  (mailto:jabbrwcky@googlemail.com)
+# *Copyright*:: Copyright (c) 2011 Jens Hausherr
+# *License*::   Apache License, Version 2.0
 #
 module QRCode
 
   # The default size for QR Code modules is 1/72 in
   DEFAULT_DOTSIZE = 1
 
-  # Prints a QR Code to the PDF document. The QR code creation happens on the fly.
+  # Prints a QR Code to the PDF document. The QR Code creation happens on the fly.
   #
-  # @param content [string] The string to put into the QR Code
-  # @param *options Named optional parameters
-  #   :level:: Error correction level to use (:l,:m,:h,:q), Defaults to :m
-  #   :exent:: Size of QR Code given in pt (1 pt == 1/72 in)
-  #   :pos:: Two-element array containing the position at which the QR-Code sholud be rendered.
-  #          Defaults to [0,cursor]
-  #   :dot:: Size of QR Code module/dot. Calculated from extent or defaulting to 1pt
-  #   :stroke:: boolean value whether to draw bounds around the QR Code.
+  # content::  The string to render as content of the QR Code
+  #
+  # *options:: Named optional parameters
+  #
+  #   +:level+:: Error correction level to use. One of: (:l,:m,:h,:q), Defaults to :m
+  #   +:exent+:: Size of QR Code given in pt (1 pt == 1/72 in)
+  #   +:pos+:: Two-element array containing the position at which the QR-Code should be rendered. Defaults to [0,cursor]
+  #   +:dot+:: Size of QR Code module/dot. Calculated from extent or defaulting to 1pt
+  #   +:stroke+:: boolean value whether to draw bounds around the QR Code.
   #             Defaults to true.
+  #
   def print_qr_code(content, *options)
     opt = options.extract_options!
     qr_version = 0
@@ -57,22 +64,21 @@ module QRCode
     end
   end
 
-  # Renders a prepared QR Code object.
+  # Renders a prepared QR Code (RQRCode::QRCode) object.
   #
-  # @param qr_code [RQRCode::QRCode] The QR Code to render
-  # @param *options Named optional parameters
-  #   :exent:: Size of QR Code given in pt (1 pt == 1/72 in)
-  #   :pos:: Two-element array containing the position at which the QR-Code sholud be rendered.
-  #          Defaults to [0,cursor]
-  #   :dot:: Size of QR Code module/dot. Calculated from extent or defaulting to 1pt
-  #   :stroke:: boolean value whether to draw bounds around the QR Code.
-  #             Defaults to true.
+  # qr_code:: The QR Code (an RQRCode::QRCode) to render
+  #
+  # *options:: Named optional parameters
+  #   +:exent+:: Size of QR Code given in pt (1 pt == 1/72 in)
+  #   +:pos+:: Two-element array containing the position at which the QR-Code should be rendered. Defaults to [0,cursor]
+  #   +:dot+:: Size of QR Code module/dot. Calculated from extent or defaulting to 1pt
+  #   +:stroke+:: boolean value whether to draw bounds around the QR Code. Defaults to true.
   def render_qr_code(qr_code, *options)
     opt = options.extract_options!
     dot = opt[:dot] || DEFAULT_DOTSIZE
     extent= opt[:extent] || (8+qr_code.modules.length) * dot
     stroke = (opt.has_key?(:stroke) && opt[:stroke].nil?) || opt[:stroke]
-    pos = opt[:pos] ||[0,cursor]
+    pos = opt[:pos] ||[0, cursor]
 
     bounding_box pos, :width => extent, :height => extent do |box|
       if stroke
