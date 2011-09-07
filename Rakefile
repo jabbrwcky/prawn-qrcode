@@ -16,10 +16,12 @@ require 'rake'
 require "rubygems"
 require "rubygems/package_task"
 
-task :default do
-  spec = Gem::Specification.load "prawn-qrcode.gemspec"
-  Gem::PackageTask.new(spec) do |pkg|
-    pkg.need_zip = true
-    pkg.need_tar = true
-  end
+spec = Gem::Specification.load "prawn-qrcode.gemspec"
+Gem::PackageTask.new(spec).define do |pkg|
+  #pkg.need_zip = true
+  pkg.need_tar = true
 end
+
+task :default => :package
+
+task :clean => :clobber_package

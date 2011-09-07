@@ -2,3 +2,4 @@
 *.pdf
 *.gem
 .DS_Store
+pkg
