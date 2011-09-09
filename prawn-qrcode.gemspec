@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-PRAWN_QRCODE_VERSION = "0.1.0"
+PRAWN_QRCODE_VERSION = "0.1.2"
 
 Gem::Specification.new do |spec|
   spec.name = "prawn-qrcode"
@@ -31,8 +31,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["Jens Hausherr"]
   spec.email = ["jabbrwcky@googlemail.com"]
   #spec.rubyforge_project = "prawn-qrcode"
-  spec.add_dependency('prawn', '~>0.11.1')
-  spec.add_dependency('rqrcode', '~>0.4.1')
+  spec.add_dependency('prawn', '>= 0.11.1', '<= 0.13')
+  spec.add_dependency('rqrcode', '>=0.4.1')
   spec.homepage = "http://github.com/jabbrwcky/prawn-qrcode"
   spec.description = <<END_DESC
   Prawn/QRCode simplifies the generation and rendering of QRCodes in Prawn PDF documents.
