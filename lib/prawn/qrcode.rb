@@ -89,12 +89,21 @@ module QRCode
 
       qr_code.modules.each_index do |row|
         pos_x = 4*dot
+        dark_col = 0
         qr_code.modules.each_index do |col|
           move_to [pos_x, pos_y]
           if qr_code.dark?(row, col)
-            fill { rectangle([pos_x, pos_y], dot, dot) }
+            dark_col = dark_col+1
+          else
+            if (dark_col>0)
+              fill { rectangle([pos_x - dark_col*dot, pos_y], dot*dark_col, dot) }
+              dark_col = 0
+            end
           end
           pos_x = pos_x + dot
+        end
+        if (dark_col > 0)
+          fill { rectangle([pos_x - dark_col*dot, pos_y], dot*dark_col, dot) }
         end
         pos_y = pos_y - dot
       end
