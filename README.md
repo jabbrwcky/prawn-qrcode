@@ -1,6 +1,9 @@
 # Prawn/QRCode: A simple extension to generate and/or render QRCodes for Prawn PDFs
 
-Prawn/QRCode is a Prawn (~> 0.11.1) extension to simplify rendering of QRCodes.
+Prawn/QRCode is a Prawn (>= 0.11.1) extension to simplify rendering of QR Codes*.
+
+(*) QR Code is registered trademark of DENSO WAVE INCORPORATED. 
+    See http://www.denso-wave.com/qrcode/ for more information.
 
 ## Install
 
@@ -43,3 +46,21 @@ For a full list of examples, take a look in the `examples` folder.
 ## Contributors
 
 - [Jens Hausherr](mailto:jabbrwcky@googlemail.com)
+- [Brandon DuRette] (https://github.com/bdurette)
+
+## Changelog
+
+### 0.1.0
+Initial Release 
+
+### 0.1.1
+Updated prawn dependency from exact requirement of 0.11.1 to an >=0.11.1, <0.13
+
+### 0.1.2
+Integrated patch to reduce rectangle count, which leads to a overall size reduction
+of the generated PDF (bdurette)
+
+### 0.2.0
+Integrated patch from bdurette to align QR Code within its bounding box.
+Adds the optional parameter :align (:left, :center, :right) to both 
+render_qr_code() and print_qr_code()
