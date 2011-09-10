@@ -37,11 +37,13 @@ module QRCode
   # *options:: Named optional parameters
   #
   #   +:level+:: Error correction level to use. One of: (:l,:m,:h,:q), Defaults to :m
-  #   +:exent+:: Size of QR Code given in pt (1 pt == 1/72 in)
+  #   +:extent+:: Size of QR Code given in pt (1 pt == 1/72 in)
   #   +:pos+:: Two-element array containing the position at which the QR-Code should be rendered. Defaults to [0,cursor]
   #   +:dot+:: Size of QR Code module/dot. Calculated from extent or defaulting to 1pt
   #   +:stroke+:: boolean value whether to draw bounds around the QR Code.
   #             Defaults to true.
+  #   +:align+:: Optional alignment within the current bounding box. Valid values are :left, :right, and :center. If set
+  #             This option overrides the horizontal positioning specified in :pos. Defaults to nil.
   #
   def print_qr_code(content, *options)
     opt = options.extract_options!
@@ -54,7 +56,7 @@ module QRCode
       qr_code = RQRCode::QRCode.new(content, :size=>qr_version, :level=>level)
 
       dot_size = extent/(8+qr_code.modules.length) if extent
-      render_qr_code(qr_code, :dot=>dot_size, :pos=>opt[:pos], :stroke=>opt[:stroke])
+      render_qr_code(qr_code, :dot=>dot_size, :pos=>opt[:pos], :stroke=>opt[:stroke], :align=>opt[:align])
     rescue RQRCode::QRCodeRunTimeError
       if qr_version <40
         retry
@@ -69,16 +71,28 @@ module QRCode
   # qr_code:: The QR Code (an RQRCode::QRCode) to render
   #
   # *options:: Named optional parameters
-  #   +:exent+:: Size of QR Code given in pt (1 pt == 1/72 in)
+  #   +:extent+:: Size of QR Code given in pt (1 pt == 1/72 in)
   #   +:pos+:: Two-element array containing the position at which the QR-Code should be rendered. Defaults to [0,cursor]
   #   +:dot+:: Size of QR Code module/dot. Calculated from extent or defaulting to 1pt
   #   +:stroke+:: boolean value whether to draw bounds around the QR Code. Defaults to true.
+  #   +:align+:: Optional alignment within the current bounding box. Valid values are :left, :right, and :center. If set
+  #             This option overrides the horizontal positioning specified in :pos. Defaults to nil.
   def render_qr_code(qr_code, *options)
     opt = options.extract_options!
     dot = opt[:dot] || DEFAULT_DOTSIZE
     extent= opt[:extent] || (8+qr_code.modules.length) * dot
     stroke = (opt.has_key?(:stroke) && opt[:stroke].nil?) || opt[:stroke]
     pos = opt[:pos] ||[0, cursor]
+
+    align = opt[:align]
+    case(align)
+    when :center
+      pos[0] = (@bounding_box.right / 2) - (extent / 2) 
+    when :right
+      pos[0] = @bounding_box.right - extent
+    when :left
+      pos[0] = 0;
+    end
 
     bounding_box pos, :width => extent, :height => extent do |box|
       if stroke
