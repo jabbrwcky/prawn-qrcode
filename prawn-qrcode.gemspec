@@ -12,11 +12,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-PRAWN_QRCODE_VERSION = "0.2.0"
-
 Gem::Specification.new do |spec|
   spec.name = "prawn-qrcode"
-  spec.version = PRAWN_QRCODE_VERSION
+  spec.version = "0.2.0"
   spec.platform = Gem::Platform::RUBY
   spec.summary = "Print QR Codes in PDF"
   spec.files =  Dir.glob("{examples,lib}/**/**/*") +
