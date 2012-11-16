@@ -82,6 +82,10 @@ module QRCode
     dot = opt[:dot] || DEFAULT_DOTSIZE
     extent= opt[:extent] || (8+qr_code.modules.length) * dot
     stroke = (opt.has_key?(:stroke) && opt[:stroke].nil?) || opt[:stroke]
+    foreground_color = opt[:foreground_color] || '000000'
+    background_color = opt[:background_color] || 'FFFFFF'
+    stroke_color = opt[:stroke_color] || '000000'
+
     pos = opt[:pos] ||[0, cursor]
 
     align = opt[:align]
@@ -94,7 +98,12 @@ module QRCode
       pos[0] = 0;
     end
 
+    stroke_color stroke_color
+    fill_color background_color
+
     bounding_box pos, :width => extent, :height => extent do |box|
+      fill_color foreground_color
+
       if stroke
         stroke_bounds
       end
