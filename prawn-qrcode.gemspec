@@ -14,7 +14,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = "prawn-qrcode"
-  spec.version = "0.2.0"
+  spec.version = "0.2.1"
   spec.platform = Gem::Platform::RUBY
   spec.summary = "Print QR Codes in PDF"
   spec.files =  Dir.glob("{examples,lib}/**/**/*") +
