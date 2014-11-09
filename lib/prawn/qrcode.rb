@@ -56,7 +56,7 @@ module QRCode
       qr_code = RQRCode::QRCode.new(content, :size=>qr_version, :level=>level)
 
       dot_size = extent/(8+qr_code.modules.length) if extent
-      render_qr_code(qr_code, :dot=>dot_size, :pos=>opt[:pos], :stroke=>opt[:stroke], :align=>opt[:align])
+      render_qr_code(qr_code, opt.merge(:dot=>dot_size))
     rescue RQRCode::QRCodeRunTimeError
       if qr_version <40
         retry
