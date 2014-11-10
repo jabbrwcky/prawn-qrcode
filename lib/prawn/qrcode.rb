@@ -28,7 +28,7 @@ require 'rqrcode'
 module QRCode
 
   # The default size for QR Code modules is 1/72 in
-  DEFAULT_DOTSIZE = 1
+  DEFAULT_DOTSIZE = 1.to_f
 
   # Prints a QR Code to the PDF document. The QR Code creation happens on the fly.
   #
@@ -49,8 +49,8 @@ module QRCode
     opt = options.extract_options!
     qr_version = 0
     level = opt[:level] || :m
-    extent = opt[:extent]
-    dot_size = opt[:dot] || DEFAULT_DOTSIZE
+    extent = opt[:extent].to_f
+    dot_size = opt[:dot].to_f || DEFAULT_DOTSIZE
     begin
       qr_version +=1
       qr_code = RQRCode::QRCode.new(content, :size=>qr_version, :level=>level)
@@ -79,8 +79,8 @@ module QRCode
   #             This option overrides the horizontal positioning specified in :pos. Defaults to nil.
   def render_qr_code(qr_code, *options)
     opt = options.extract_options!
-    dot = opt[:dot] || DEFAULT_DOTSIZE
-    extent= opt[:extent] || (8+qr_code.modules.length) * dot
+    dot = opt[:dot].to_f || DEFAULT_DOTSIZE
+    extent= opt[:extent].to_f || (8+qr_code.modules.length) * dot
     stroke = (opt.has_key?(:stroke) && opt[:stroke].nil?) || opt[:stroke]
     foreground_color = opt[:foreground_color] || '000000'
     background_color = opt[:background_color] || 'FFFFFF'
