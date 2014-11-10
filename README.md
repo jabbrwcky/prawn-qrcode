@@ -1,5 +1,7 @@
 # Prawn/QRCode: A simple extension to generate and/or render QRCodes for Prawn PDFs
 
+![TravisCI Build state](https://travis-ci.org/jabbrwcky/prawn-qrcode.svg?branch=master)
+
 Prawn/QRCode is a Prawn (>= 0.11.1) extension to simplify rendering of QR Codes*.
 
 (*) QR Code is registered trademark of DENSO WAVE INCORPORATED. 
