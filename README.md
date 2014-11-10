@@ -17,7 +17,7 @@ $ gem install prawn-qrcode
 require 'prawn/qrcode'
 
 qrcode_content = "http://github.com/jabbrwcky/prawn-qrcode"
-qrcode = RQRCode::QRCode.new("http://github.com/jabbrwcky/prawn-qrcode", :level=>:h, :size => 5)
+qrcode = RQRCode::QRCode.new(qrcode_content, :level=>:h, :size => 5)
 
 # Render a prepared QRCode at he cursor position
 # using a default module (e.g. dot) size of 1pt or 1/72 in
