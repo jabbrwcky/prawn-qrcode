@@ -1,4 +1,6 @@
-# Prawn/QRCode: A simple extension to generate and/or render QRCodes for Prawn PDFs
+# Prawn/QRCode
+
+A simple extension to generate and/or render QRCodes for Prawn PDFs
 
 ![TravisCI Build state](https://travis-ci.org/jabbrwcky/prawn-qrcode.svg?branch=master)
 
@@ -44,11 +46,6 @@ end
 ```
 
 For a full list of examples, take a look in the `examples` folder.
-
-## Contributors
-
-- [Jens Hausherr](mailto:jabbrwcky@googlemail.com)
-- [Brandon DuRette] (https://github.com/bdurette)
 
 ## Changelog
 
