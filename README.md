@@ -3,6 +3,7 @@
 A simple extension to generate and/or render QRCodes for Prawn PDFs
 
 ![TravisCI Build state](https://travis-ci.org/jabbrwcky/prawn-qrcode.svg?branch=master)
+[![Gem Version](https://badge.fury.io/rb/prawn-qrcode.svg)](http://badge.fury.io/rb/prawn-qrcode)
 
 Prawn/QRCode is a Prawn (>= 0.11.1) extension to simplify rendering of QR Codes*.
 
