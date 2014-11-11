@@ -14,7 +14,7 @@
 
 Gem::Specification.new do |spec|
   spec.name = "prawn-qrcode"
-  spec.version = "0.2.1"
+  spec.version = "0.2.2"
   spec.platform = Gem::Platform::RUBY
   spec.summary = "Print QR Codes in PDF"
   spec.files =  Dir.glob("{examples,lib}/**/**/*") +
@@ -34,6 +34,5 @@ Gem::Specification.new do |spec|
   spec.homepage = "http://github.com/jabbrwcky/prawn-qrcode"
   spec.description = <<END_DESC
   Prawn/QRCode simplifies the generation and rendering of QRCodes in Prawn PDF documents.
-  QR Codes
 END_DESC
 end

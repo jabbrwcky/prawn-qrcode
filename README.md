@@ -63,3 +63,10 @@ of the generated PDF (bdurette)
 Integrated patch from bdurette to align QR Code within its bounding box.
 Adds the optional parameter :align (:left, :center, :right) to both 
 render_qr_code() and print_qr_code()
+
+### 0.2.1
+Updated prawn dependnecy spec to >= 0.11.1.
+
+### 0.2.2
+Fixed default stroke and explicit conversion of extents to floats.
+
