@@ -1,5 +1,5 @@
 #--
-# Copyright 2011 Jens Hausherr
+# Copyright 2010-2014 Jens Hausherr
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -81,7 +81,7 @@ module QRCode
     opt = options.extract_options!
     dot = opt[:dot].to_f || DEFAULT_DOTSIZE
     extent= opt[:extent].to_f || (8+qr_code.modules.length) * dot
-    stroke = (opt.has_key?(:stroke) && opt[:stroke].nil?) || opt[:stroke]
+    stroke = !(opt.has_key?(:stroke) && opt[:stroke].nil?) || opt[:stroke]
     foreground_color = opt[:foreground_color] || '000000'
     background_color = opt[:background_color] || 'FFFFFF'
     stroke_color = opt[:stroke_color] || '000000'
@@ -91,7 +91,7 @@ module QRCode
     align = opt[:align]
     case(align)
     when :center
-      pos[0] = (@bounding_box.right / 2) - (extent / 2) 
+      pos[0] = (@bounding_box.right / 2) - (extent / 2)
     when :right
       pos[0] = @bounding_box.right - extent
     when :left
