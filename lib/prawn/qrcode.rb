@@ -81,7 +81,9 @@ module QRCode
     opt = options.extract_options!
     dot = opt[:dot].to_f || DEFAULT_DOTSIZE
     extent= opt[:extent].to_f || (8+qr_code.modules.length) * dot
-    stroke = !(opt.has_key?(:stroke) && opt[:stroke].nil?) || opt[:stroke]
+    stroke = true
+    stroke = opt[:stroke] if opt.has_key?(:stroke)
+
     foreground_color = opt[:foreground_color] || '000000'
     background_color = opt[:background_color] || 'FFFFFF'
     stroke_color = opt[:stroke_color] || '000000'
