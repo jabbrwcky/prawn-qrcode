@@ -49,13 +49,14 @@ module QRCode
     opt = options.extract_options!
     qr_version = 0
     level = opt[:level] || :m
-    extent = opt[:extent].to_f
+    extent = opt[:extent].nil? ? nil : opt[:extent].to_f
     dot_size = opt[:dot].to_f || DEFAULT_DOTSIZE
     begin
       qr_version +=1
       qr_code = RQRCode::QRCode.new(content, :size=>qr_version, :level=>level)
 
-      dot_size = extent/(8+qr_code.modules.length) if extent
+      dot_size = extent/(8+qr_code.modules.length) unless extent.nil?
+      
       render_qr_code(qr_code, opt.merge(:dot=>dot_size))
     rescue RQRCode::QRCodeRunTimeError
       if qr_version <40
