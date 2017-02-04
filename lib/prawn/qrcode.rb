@@ -138,6 +138,7 @@ module Prawn
         end
       end
     end
+  end
 end
 
 Prawn::Document.extensions << Prawn::QRCode
