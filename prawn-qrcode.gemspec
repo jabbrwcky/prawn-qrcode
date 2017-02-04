@@ -1,4 +1,5 @@
-# Copyright 2011-2014 Jens Hausherr
+# coding: utf-8
+# Copyright 2011-2017 Jens Hausherr
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -12,9 +13,13 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'prawn/qrcode/version'
+
 Gem::Specification.new do |spec|
   spec.name                      = "prawn-qrcode"
-  spec.version                   = "0.2.2.1"
+  spec.version                   = Prawn::QRCode::VERSION
   spec.platform                  = Gem::Platform::RUBY
   spec.summary                   = "Print QR Codes in PDF"
   spec.licenses                  = [ 'Apache License 2.0' ]
@@ -28,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.rdoc_options << '--title' << 'Prawn/QRCode Documentation' <<
                        '--main'  << 'README.md' << '-q'
   spec.authors                   = ["Jens Hausherr"]
-  spec.email                     = ["jabbrwcky@googlemail.com"]
+  spec.email                     = ["jabbrwcky@gmail.com"]
   #spec.rubyforge_project         = "prawn-qrcode"
   spec.homepage                   = "http://github.com/jabbrwcky/prawn-qrcode"
 
