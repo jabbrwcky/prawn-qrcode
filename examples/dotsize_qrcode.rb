@@ -18,22 +18,43 @@ require_relative '../lib/prawn/qrcode'
 
 qrcode = 'https://github.com/jabbrwcky/prawn-qrcode'
 
-Prawn::Document::new(:page_size => "A4") do
-  stroke_axis
-  text "Sample autosized QR-Code (with stroked bounds). Size of dots : 3mm (huge)"
-  move_down 290
-  print_qr_code(qrcode, :dot=>3.send(:mm))
-  move_down 10
-
-  text "Sample QR-Code (with and without stroked bounds) using dots with size: 1 mm (~2.8pt)"
-  move_down 100
+Prawn::Document.new(page_size: 'A4') do
+  font 'Helvetica', style: :bold do
+    text 'Sample autosized QR-Code (with stroked bounds). Size of dots : 3mm (huge)'
+  end
+  move_down 5.mm
   cpos = cursor
-  print_qr_code(qrcode, :dot=>1.send(:mm))
-  print_qr_code(qrcode, :pos=>[150,cpos], :dot=>1.send(:mm), :stroke=>false)
-  text "Higher ECC Levels (may) increase module size. "+
-           "This QR Code uses ECC Level Q (ca. 30% of symbols can be recovered)."
-  move_down 120
-  print_qr_code(qrcode, :dot=>1.send(:mm), :level=>:q)
+  font 'Courier', size: 8 do
+    text_box "require 'prawn/measurement_extensions'\n\nprint_qr_code(qrcode, dot: 3.mm)", at: [320, cursor], height: 200, width: 220
+  end
+  print_qr_code(qrcode, dot: 3.mm)
+  move_down 30
 
-  render_file("dotsize.pdf")
+  font 'Helvetica', style: :bold do
+    text 'Sample QR-Code (with and without stroked bounds) using dots with size: 1 mm (~2.8pt)'
+  end
+
+  move_down 10
+  cpos = cursor
+  print_qr_code(qrcode, dot: 1.mm)
+  print_qr_code(qrcode, pos: [150, cpos], dot: 1.mm, stroke: false)
+  font 'Courier', size: 8 do
+    text_box "require 'prawn/measurement_extensions'\n\n" +
+     "print_qr_code(qrcode, dot: 1.mm)\n"+
+     "print_qr_code(qrcode, pos: [150,cpos], dot: 1.mm, stroke: false)", at: [320, cpos], height: 200, width: 220
+  end
+
+  move_down 30
+  font 'Helvetica', style: :bold do
+    text 'Higher ECC Levels (may) increase module size. '\
+         'This QR Code uses ECC Level Q (ca. 30% of symbols can be recovered).'
+  end
+  move_down 10
+  cpos = cursor
+  print_qr_code(qrcode, dot: 1.mm, level: :q)
+  font 'Courier', size: 8 do
+    text_box "require 'prawn/measurement_extensions'\n\n" +
+     "print_qr_code(qrcode, dot: 1.mm, level: :q)", at: [320, cpos], height: 200, width: 220
+  end
+  render_file('dotsize.pdf')
 end

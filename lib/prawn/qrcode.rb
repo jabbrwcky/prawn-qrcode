@@ -45,21 +45,16 @@ module Prawn
     #   +:align+:: Optional alignment within the current bounding box. Valid values are :left, :right, and :center. If set
     #             This option overrides the horizontal positioning specified in :pos. Defaults to nil.
     #
-    def print_qr_code(content, *options)
-      opt = options.extract_options!
+    def print_qr_code(content, level: :m, dot: DEFAULT_DOTSIZE, pos: [0,cursor], stroke: true, **options)
       qr_version = 0
-      level = opt[:level] || :m
-      extent = opt[:extent].nil? ? nil : opt[:extent].to_f
-      dot_size = DEFAULT_DOTSIZE
-      dot_size = opt[:dot].to_f if opt[:dot]
+      dot_size = dot
 
       begin
         qr_version += 1
         qr_code = RQRCode::QRCode.new(content, size: qr_version, level: level)
+        dot = options[:extent] / (8 + qr_code.modules.length) if options[:extent]
 
-        dot_size = extent / (8 + qr_code.modules.length) unless extent.nil?
-
-        render_qr_code(qr_code, opt.merge(dot: dot_size))
+        render_qr_code(qr_code, dot: dot, pos: pos, stroke: stroke, **options)
       rescue RQRCode::QRCodeRunTimeError
         if qr_version < 40
           retry
@@ -80,23 +75,10 @@ module Prawn
     #   +:stroke+:: boolean value whether to draw bounds around the QR Code. Defaults to true.
     #   +:align+:: Optional alignment within the current bounding box. Valid values are :left, :right, and :center. If set
     #             This option overrides the horizontal positioning specified in :pos. Defaults to nil.
-    def render_qr_code(qr_code, *options)
-      opt = options.extract_options!
-      dot = DEFAULT_DOTSIZE
-      dot = opt[:dot].to_f if opt[:dot]
+    def render_qr_code(qr_code, dot: DEFAULT_DOTSIZE, pos: [0,cursor], stroke: true, foreground_color: '000000', background_color: 'FFFFFF', stroke_color: '000000', **options)
+      extent = extent || (8 + qr_code.modules.length) * dot
 
-      extent = opt[:extent].to_f || (8 + qr_code.modules.length) * dot
-      stroke = true
-      stroke = opt[:stroke] if opt.key?(:stroke)
-
-      foreground_color = opt[:foreground_color] || '000000'
-      background_color = opt[:background_color] || 'FFFFFF'
-      stroke_color = opt[:stroke_color] || '000000'
-
-      pos = opt[:pos] || [0, cursor]
-
-      align = opt[:align]
-      case align
+      case options[:align]
       when :center
         pos[0] = (@bounding_box.right / 2) - (extent / 2)
       when :right
