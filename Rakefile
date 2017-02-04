@@ -15,6 +15,7 @@
 require 'rake'
 require "rubygems"
 require "rubygems/package_task"
+require "bundler/gem_tasks"
 
 spec = Gem::Specification.load "prawn-qrcode.gemspec"
 Gem::PackageTask.new(spec).define do |pkg|

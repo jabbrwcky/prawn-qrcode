@@ -34,13 +34,16 @@ Gem::Specification.new do |spec|
                        '--main'  << 'README.md' << '-q'
   spec.authors                   = ["Jens Hausherr"]
   spec.email                     = ["jabbrwcky@gmail.com"]
-  #spec.rubyforge_project         = "prawn-qrcode"
   spec.homepage                   = "http://github.com/jabbrwcky/prawn-qrcode"
 
   spec.description                = <<END_DESC
   Prawn/QRCode simplifies the generation and rendering of QRCodes in Prawn PDF documents.
 END_DESC
 
-  spec.add_dependency('prawn', '>= 0.11.1')
+  spec.add_dependency('prawn', '>=1')
   spec.add_dependency('rqrcode', '>=0.4.1')
+
+  spec.add_development_dependency "bundler", "~> 1.13"
+  spec.add_development_dependency "rake", "~> 10.0"
+  #spec.add_development_dependency "rspec", "~> 3.0"
 end
