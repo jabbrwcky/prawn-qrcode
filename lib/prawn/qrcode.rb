@@ -42,20 +42,21 @@ module Prawn
     #   +:dot+:: Size of QR Code module/dot. Calculated from extent or defaulting to 1pt
     #   +:stroke+:: boolean value whether to draw bounds around the QR Code.
     #             Defaults to true.
+    #   +:margin+:: Size of margin around code in QR-Code modules/dots, Default to 4
     #   +:align+:: Optional alignment within the current bounding box. Valid values are :left, :right, and :center. If set
     #             This option overrides the horizontal positioning specified in :pos. Defaults to nil.
     #   +:debug+:: Optional boolean, renders a coordinate grid around the QRCode if true (uses Prawn#stroke_axis)
     #
-    def print_qr_code(content, level: :m, dot: DEFAULT_DOTSIZE, pos: [0,cursor], stroke: true, **options)
+    def print_qr_code(content, level: :m, dot: DEFAULT_DOTSIZE, pos: [0,cursor], stroke: true, margin: 4, **options)
       qr_version = 0
       dot_size = dot
 
       begin
         qr_version += 1
         qr_code = RQRCode::QRCode.new(content, size: qr_version, level: level)
-        dot = options[:extent] / (8 + qr_code.modules.length) if options[:extent]
+        dot = options[:extent] / (2*margin + qr_code.modules.length) if options[:extent]
 
-        render_qr_code(qr_code, dot: dot, pos: pos, stroke: stroke, **options)
+        render_qr_code(qr_code, dot: dot, pos: pos, stroke: stroke, margin: margin, **options)
       rescue RQRCode::QRCodeRunTimeError
         if qr_version < 40
           retry
@@ -74,12 +75,13 @@ module Prawn
     #   +:pos+:: Two-element array containing the position at which the QR-Code should be rendered. Defaults to [0,cursor]
     #   +:dot+:: Size of QR Code module/dot. Calculated from extent or defaulting to 1pt
     #   +:stroke+:: boolean value whether to draw bounds around the QR Code. Defaults to true.
+    #   +:margin+:: Size of margin around code in QR-Code modules/dots, Default to 4
     #   +:align+:: Optional alignment within the current bounding box. Valid values are :left, :right, and :center. If set
     #             This option overrides the horizontal positioning specified in :pos. Defaults to nil.
     #   +:debug+:: Optional boolean, renders a coordinate grid around the QRCode if true (uses Prawn#stroke_axis)
     #
-    def render_qr_code(qr_code, dot: DEFAULT_DOTSIZE, pos: [0,cursor], stroke: true, foreground_color: '000000', background_color: 'FFFFFF', stroke_color: '000000', **options)
-      extent = extent || (8 + qr_code.modules.length) * dot
+    def render_qr_code(qr_code, dot: DEFAULT_DOTSIZE, pos: [0,cursor], stroke: true, foreground_color: '000000', background_color: 'FFFFFF', stroke_color: '000000', margin: 4, **options)
+      extent = extent || (2*margin + qr_code.modules.length) * dot
 
       case options[:align]
       when :center
@@ -94,10 +96,10 @@ module Prawn
 
       bounding_box(pos, width: extent, height: extent) do |_box|
         fill_color foreground_color
-        pos_y = 4 * dot + qr_code.modules.length * dot
+        pos_y = margin * dot + qr_code.modules.length * dot
 
         qr_code.modules.each_index do |row|
-          pos_x = 4 * dot
+          pos_x = margin * dot
           dark_col = 0
           qr_code.modules.each_index do |col|
             move_to [pos_x, pos_y]
