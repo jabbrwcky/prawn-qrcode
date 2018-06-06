@@ -41,7 +41,7 @@ end
 # Render a code for raw content with a given dot size
 Prawn::Document::new do
   # Renders a QR Code at he cursor position using a dot (module) size of 2.8/72 in (roughly 1 mm).
-  render_qr_code(qrcode_content, :dot=>2.8)
+  render_qr_code(qrcode, :dot=>2.8)
   render_file("qr3.pdf")
 end
 ```
