@@ -57,7 +57,7 @@ module Prawn
         dot = options[:extent] / (2*margin + qr_code.modules.length) if options[:extent]
 
         render_qr_code(qr_code, dot: dot, pos: pos, stroke: stroke, margin: margin, **options)
-      rescue RQRCode::QRCodeRunTimeError
+      rescue RQRCodeCore::QRCodeRunTimeError
         if qr_version < 40
           retry
         else
@@ -103,7 +103,7 @@ module Prawn
           dark_col = 0
           qr_code.modules.each_index do |col|
             move_to [pos_x, pos_y]
-            if qr_code.dark?(row, col)
+            if qr_code.qrcode.checked?(row, col)
               dark_col += 1
             else
               if dark_col > 0
