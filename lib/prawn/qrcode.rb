@@ -21,14 +21,25 @@ require 'rqrcode'
 # :main: This is an extension for Prawn::Document to simplify rendering QR Codes.
 # The module registers itself as Prawn extension upon loading.
 #
-# *Author*::    Jens Hausherr  (mailto:jabbrwcky@googlemail.com)
-# *Copyright*:: Copyright (c) 2011 Jens Hausherr
+# *Author*::    Jens Hausherr  (mailto:jabbrwcky@gmail.com)
+# *Copyright*:: Copyright (c) 2011 -2019 Jens Hausherr
 # *License*::   Apache License, Version 2.0
 #
 module Prawn
   module QRCode
-    # The default size for QR Code modules is 1/72 in
+    # DEFAULT_DOTSIZE defined the default size for QR Code modules in multiples of 1/72 in
     DEFAULT_DOTSIZE = 1.to_f
+
+    def self.min_qrcode(content, qr_version = 0, dot: DEFAULT_DOTSIZE, level: :m, margin: 4, extent: nil, **)
+      qr_version += 1
+      qr_code = RQRCode::QRCode.new(content, size: qr_version, level: level)
+      dot = extent / (2 * margin + qr_code.modules.length) if extent
+
+      [qr_code, dot]
+    rescue RQRCodeCore::QRCodeRunTimeError
+      retry if qr_version < 40
+      raise
+    end
 
     # Prints a QR Code to the PDF document. The QR Code creation happens on the fly.
     #
@@ -44,26 +55,12 @@ module Prawn
     #             Defaults to true.
     #   +:margin+:: Size of margin around code in QR-Code modules/dots, Default to 4
     #   +:align+:: Optional alignment within the current bounding box. Valid values are :left, :right, and :center. If set
-    #             This option overrides the horizontal positioning specified in :pos. Defaults to nil.
+    #             this option overrides the horizontal positioning specified in :pos. Defaults to nil.
     #   +:debug+:: Optional boolean, renders a coordinate grid around the QRCode if true (uses Prawn#stroke_axis)
     #
     def print_qr_code(content, level: :m, dot: DEFAULT_DOTSIZE, pos: [0, cursor], stroke: true, margin: 4, **options)
-      qr_version = 0
-      dot_size = dot
-
-      begin
-        qr_version += 1
-        qr_code = RQRCode::QRCode.new(content, size: qr_version, level: level)
-        dot = options[:extent] / (2 * margin + qr_code.modules.length) if options[:extent]
-
-        render_qr_code(qr_code, dot: dot, pos: pos, stroke: stroke, margin: margin, **options)
-      rescue RQRCodeCore::QRCodeRunTimeError
-        if qr_version < 40
-          retry
-        else
-          raise
-          end
-      end
+      qr_code, dot = Prawn::QRCode.min_qrcode(content, dot: dot, level: level, margin: margin, **options)
+      render_qr_code(qr_code, dot: dot, pos: pos, stroke: stroke, margin: margin, **options)
     end
 
     # Renders a prepared QR Code (RQRCode::QRCode) object.
@@ -80,50 +77,115 @@ module Prawn
     #             This option overrides the horizontal positioning specified in :pos. Defaults to nil.
     #   +:debug+:: Optional boolean, renders a coordinate grid around the QRCode if true (uses Prawn#stroke_axis)
     #
-    def render_qr_code(qr_code, dot: DEFAULT_DOTSIZE, pos: [0, cursor], stroke: true, foreground_color: '000000', background_color: 'FFFFFF', stroke_color: '000000', margin: 4, **options)
-      extent ||= (2 * margin + qr_code.modules.length) * dot
+    def render_qr_code(qr_code, **options)
+      renderer = Renderer.new(qr_code, **options)
+      renderer.render(self)
+    end
 
-      case options[:align]
-      when :center
-        pos[0] = (@bounding_box.right / 2) - (extent / 2)
-      when :right
-        pos[0] = @bounding_box.right - extent
-      when :left
-        pos[0] = 0
+    class Renderer
+      attr_accessor :qr_code
+      %I[dot pos stroke foreground_color background_color stroke_color margin align debug extent].each { |p| attr_writer p }
+
+      def initialize(qr_code, options)
+        @qr_code = qr_code
+        options.each { |k, v| send("#{k}=", v) }
       end
 
-      fill_color background_color
+      def dot
+        @dot ||= @extent / (2 * margin + qr_code.modules.length) if @extent
+        @dot ||= DEFAULT_DOTSIZE unless @extent
+        @dot
+      end
 
-      bounding_box(pos, width: extent, height: extent) do |_box|
-        fill_color foreground_color
-        pos_y = margin * dot + qr_code.modules.length * dot
+      def stroke
+        @stroke ||= true
+      end
 
-        qr_code.modules.each_index do |row|
-          pos_x = margin * dot
-          dark_col = 0
-          qr_code.modules.each_index do |col|
-            move_to [pos_x, pos_y]
-            if qr_code.qrcode.checked?(row, col)
-              dark_col += 1
-            else
-              if dark_col > 0
-                fill { rectangle([pos_x - dark_col * dot, pos_y], dot * dark_col, dot) }
-                dark_col = 0
+      def foreground_color
+        @foreground_color ||= '000000'
+      end
+
+      def background_color
+        @background_color ||= 'FFFFFF'
+      end
+
+      def stroke_color
+        @stroke_color ||= '000000'
+      end
+
+      def margin
+        @margin ||= 4
+      end
+
+      def extent
+        @extent ||= (2 * margin + qr_code.modules.length) * dot if @dot
+        @extent
+      end
+
+      def margin_size
+        margin * dot
+      end
+
+      def align(bounding_box)
+        rlim = bounding_box.right
+        case @align
+        when :center
+          @point[0] = (rlim / 2) - (extent / 2)
+        when :right
+          @point[0] = rlim - extent
+        when :left
+          @point[0] = 0
+        end
+      end
+
+      def render(pdf)
+        pdf.fill_color background_color
+
+        pdf.bounding_box(pos(pdf), width: extent, height: extent) do |_box|
+          pdf.fill_color foreground_color
+          margin_dist = margin * dot
+
+          m = qr_code.modules
+
+          pos_y = margin_dist + m.length * dot
+
+          m.each_index do |row|
+            pos_x = margin_dist
+            dark_col = 0
+
+            m.each_index do |col|
+              pdf.move_to [pos_x, pos_y]
+              if qr_code.qrcode.checked?(row, col)
+                dark_col += 1
+              else
+                if dark_col > 0
+                  dark_col_extent = dark_col * dot
+                  pdf.fill { pdf.rectangle([pos_x - dark_col_extent, pos_y], dark_col_extent, dot) }
+                  dark_col = 0
+                end
               end
+              pos_x += dot
             end
-            pos_x += dot
-          end
-          if dark_col > 0
-            fill { rectangle([pos_x - dark_col * dot, pos_y], dot * dark_col, dot) }
-          end
-          pos_y -= dot
-        end
 
-        if stroke
-          fill_color stroke_color
-          stroke_bounds
+            pdf.fill { pdf.rectangle([pos_x - dark_col * dot, pos_y], dot * dark_col, dot) } if dark_col > 0
+
+            pos_y -= dot
+          end
+
+          if stroke
+            pdf.fill_color stroke_color
+            pdf.stroke_bounds
+          end
+          pdf.stroke_axis(at: [-1, -1], negative_axes_length: 0, color: '0C0C0C', step_length: 50) if debug
         end
-        stroke_axis(at: [-1, -1], negative_axes_length: 0, color: '0C0C0C', step_length: 50) if options[:debug]
+      end
+
+      private
+
+      attr_reader :debug
+
+      def pos(pdf)
+        @pos ||= [0, pdf.cursor]
       end
     end
   end
