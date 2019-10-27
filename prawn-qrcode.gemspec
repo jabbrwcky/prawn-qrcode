@@ -1,4 +1,3 @@
-# coding: utf-8
 # Copyright 2011-2017 Jens Hausherr
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,28 +12,28 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-lib = File.expand_path('../lib', __FILE__)
+lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'prawn/qrcode/version'
 
 Gem::Specification.new do |spec|
-  spec.name                      = "prawn-qrcode"
+  spec.name                      = 'prawn-qrcode'
   spec.version                   = Prawn::QRCode::VERSION
   spec.platform                  = Gem::Platform::RUBY
-  spec.summary                   = "Print QR Codes in PDF"
-  spec.licenses                  = [ 'Apache License 2.0' ]
-  spec.files                     =  Dir.glob("{examples,lib}/**/**/*") +
-                      ["Rakefile", "prawn-qrcode.gemspec"]
-  spec.require_path              = "lib"
-  spec.required_ruby_version     = '>= 2.0.0'
-  spec.required_rubygems_version = ">= 1.3.6"
+  spec.summary                   = 'Print QR Codes in PDF'
+  spec.licenses                  = ['Apache License 2.0']
+  spec.files = Dir.glob('{examples,lib}/**/**/*') +
+               ['Rakefile', 'prawn-qrcode.gemspec']
+  spec.require_path              = 'lib'
+  spec.required_ruby_version     = '>= 2.2.0'
+  spec.required_rubygems_version = '>= 1.3.6'
 
-  spec.extra_rdoc_files          = %w{README.md LICENSE}
-  spec.rdoc_options << '--title' << 'Prawn/QRCode Documentation' <<
-                       '--main'  << 'README.md' << '-q'
-  spec.authors                   = ["Jens Hausherr"]
-  spec.email                     = ["jabbrwcky@gmail.com"]
-  spec.homepage                   = "http://github.com/jabbrwcky/prawn-qrcode"
+  spec.extra_rdoc_files          = %w[README.md LICENSE]
+  spec.rdoc_options << '--title' << 'Prawn/QRCode Documentation' \
+    '--main' << 'README.md' << '-q'
+  spec.authors                   = ['Jens Hausherr']
+  spec.email                     = ['jabbrwcky@gmail.com']
+  spec.homepage                   = 'http://github.com/jabbrwcky/prawn-qrcode'
 
   spec.description                = <<END_DESC
   Prawn/QRCode simplifies the generation and rendering of QRCodes in Prawn PDF documents.
@@ -43,7 +42,8 @@ END_DESC
   spec.add_dependency('prawn', '>=1')
   spec.add_dependency('rqrcode', '>=1.0.0')
 
-  spec.add_development_dependency "bundler", "~> 2.0"
-  spec.add_development_dependency "rake", "~> 13.0"
-  #spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency 'bundler', '~> 2.0'
+  spec.add_development_dependency 'rake', '~> 13.0'
+  spec.add_development_dependency 'rubocop', '~>0.66.0'
+  # spec.add_development_dependency "rspec", "~> 3.0"
 end

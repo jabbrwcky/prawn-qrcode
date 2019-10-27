@@ -47,14 +47,14 @@ module Prawn
     #             This option overrides the horizontal positioning specified in :pos. Defaults to nil.
     #   +:debug+:: Optional boolean, renders a coordinate grid around the QRCode if true (uses Prawn#stroke_axis)
     #
-    def print_qr_code(content, level: :m, dot: DEFAULT_DOTSIZE, pos: [0,cursor], stroke: true, margin: 4, **options)
+    def print_qr_code(content, level: :m, dot: DEFAULT_DOTSIZE, pos: [0, cursor], stroke: true, margin: 4, **options)
       qr_version = 0
       dot_size = dot
 
       begin
         qr_version += 1
         qr_code = RQRCode::QRCode.new(content, size: qr_version, level: level)
-        dot = options[:extent] / (2*margin + qr_code.modules.length) if options[:extent]
+        dot = options[:extent] / (2 * margin + qr_code.modules.length) if options[:extent]
 
         render_qr_code(qr_code, dot: dot, pos: pos, stroke: stroke, margin: margin, **options)
       rescue RQRCodeCore::QRCodeRunTimeError
@@ -80,8 +80,8 @@ module Prawn
     #             This option overrides the horizontal positioning specified in :pos. Defaults to nil.
     #   +:debug+:: Optional boolean, renders a coordinate grid around the QRCode if true (uses Prawn#stroke_axis)
     #
-    def render_qr_code(qr_code, dot: DEFAULT_DOTSIZE, pos: [0,cursor], stroke: true, foreground_color: '000000', background_color: 'FFFFFF', stroke_color: '000000', margin: 4, **options)
-      extent = extent || (2*margin + qr_code.modules.length) * dot
+    def render_qr_code(qr_code, dot: DEFAULT_DOTSIZE, pos: [0, cursor], stroke: true, foreground_color: '000000', background_color: 'FFFFFF', stroke_color: '000000', margin: 4, **options)
+      extent ||= (2 * margin + qr_code.modules.length) * dot
 
       case options[:align]
       when :center
@@ -123,7 +123,7 @@ module Prawn
           fill_color stroke_color
           stroke_bounds
         end
-        stroke_axis(at: [-1,-1], negative_axes_length: 0, color: '0C0C0C', step_length: 50)  if options[:debug]
+        stroke_axis(at: [-1, -1], negative_axes_length: 0, color: '0C0C0C', step_length: 50) if options[:debug]
       end
     end
   end
