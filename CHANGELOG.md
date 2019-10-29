@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Unreleased (0.5.0)
+
+* Add support for QRCode table cells for prawn/table (#14)
+
 ## v0.4.0
 
 * Compatibility fixes with prawn >=1.0.0 (cthiel)
