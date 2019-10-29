@@ -43,7 +43,8 @@ END_DESC
   spec.add_dependency('rqrcode', '>=1.0.0')
 
   spec.add_development_dependency 'bundler', '~> 2.0'
+  spec.add_development_dependency 'minitest', '~> 5.12', '>= 5.12.2'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rubocop', '~>0.66.0'
-  # spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency 'prawn-table', '~> 0.2.2'
 end

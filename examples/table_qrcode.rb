@@ -1,4 +1,4 @@
-# Copyright 2011 - 2109 Jens Hausherr
+# Copyright 2011 - 2019 Jens Hausherr
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,24 +14,22 @@
 require 'rubygems'
 require 'prawn'
 require 'prawn/measurement_extensions'
+require 'prawn/table'
 require_relative '../lib/prawn/qrcode'
+require_relative '../lib/prawn/qrcode/table'
 
-data = 'https://github.com/jabbrwcky/prawn-qrcode'
+# qrcode = 'https://github.com/jabbrwcky/prawn-qrcode'
 
 Prawn::Document.new(page_size: 'A4') do
-  text 'Sample autosized QR-Code (with stroked bounds) Size of QRCode : 1 in (72 pt)'
-  print_qr_code(data, extent: 72)
-  move_down 20
-
-  text 'Sample autosized QR-Code (with and without stroked bounds) Size of QRCode : 2 in (144 pt)'
+  font 'Helvetica', style: :bold do
+    text 'QRCode in table'
+  end
+  move_down 5.mm
   cpos = cursor
-  print_qr_code(data, extent: 144)
-  print_qr_code(data, pos: [150, cpos], extent: 144, stroke: false)
-  move_down 10
-
-  text 'Sample autosized QR-Code (with stroked bounds) Size of QRCode :10 cm'
-  print_qr_code(data, extent: 10.send(:cm), stroke: true, level: :q)
-  move_down 10
-  text "Quite huge, isn't it?"
-  render_file('autosize.pdf')
+  qr = make_qrcode_cell(content: 'foo', extent:72, stroke:false, padding:[10,10,10,10])
+  t = make_table([['URL', 'QRCODE'],
+                  ['https://github.com/jabbrwcky/prawn-qrcode', qr]])
+  t.draw
+  move_down 20
+  render_file('table.pdf')
 end

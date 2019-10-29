@@ -27,19 +27,25 @@ require 'rqrcode'
 #
 module Prawn
   module QRCode
-    # DEFAULT_DOTSIZE defined the default size for QR Code modules in multiples of 1/72 in
+    # DEFAULT_DOTSIZE defines the default size for QR Code modules in multiples of 1/72 in
     DEFAULT_DOTSIZE = 1.to_f
 
     def self.min_qrcode(content, qr_version = 0, dot: DEFAULT_DOTSIZE, level: :m, margin: 4, extent: nil, **)
       qr_version += 1
+
       qr_code = RQRCode::QRCode.new(content, size: qr_version, level: level)
-      dot = extent / (2 * margin + qr_code.modules.length) if extent
+      dot = dotsize(extent, margin, qr_code.modules.length) if extent
 
       [qr_code, dot]
     rescue RQRCodeCore::QRCodeRunTimeError
       retry if qr_version < 40
       raise
     end
+
+    def self.dotsize(extent, margin, modules)
+      extent.to_f / (2.to_f * margin.to_f + modules.to_f)
+    end
+
 
     # Prints a QR Code to the PDF document. The QR Code creation happens on the fly.
     #
@@ -84,20 +90,24 @@ module Prawn
 
     class Renderer
       attr_accessor :qr_code
-      %I[dot pos stroke foreground_color background_color stroke_color margin align debug extent].each { |p| attr_writer p }
+
+      RENDER_OPTS = %I[dot pos stroke foreground_color background_color stroke_color margin align debug extent level]
+      RENDER_OPTS.each { |attr| attr_writer attr }
 
       def initialize(qr_code, options)
         @qr_code = qr_code
-        options.each { |k, v| send("#{k}=", v) }
+        options.select{ |k,v| RENDER_OPTS.include?(k) }.each { |k, v| send("#{k}=", v) }
       end
 
       def dot
-        @dot ||= @extent / (2 * margin + qr_code.modules.length) if @extent
+        @dot ||= Prawn::QRCode.dotsize(@extent, margin, qr_code.modules.length) if @extent
         @dot ||= DEFAULT_DOTSIZE unless @extent
         @dot
       end
 
       def stroke
+        return @stroke unless @stroke.nil?
+
         @stroke ||= true
       end
 
@@ -118,7 +128,7 @@ module Prawn
       end
 
       def extent
-        @extent ||= (2 * margin + qr_code.modules.length) * dot if @dot
+        @extent ||= (2 * margin + qr_code.modules.length) * dot
         @extent
       end
 
@@ -138,6 +148,7 @@ module Prawn
         end
       end
 
+      # rubocop:disable Metrics/AbcSize
       def render(pdf)
         pdf.fill_color background_color
 
@@ -149,13 +160,13 @@ module Prawn
 
           pos_y = margin_dist + m.length * dot
 
-          m.each_index do |row|
+          m.each_with_index do |row, index|
             pos_x = margin_dist
             dark_col = 0
 
-            m.each_index do |col|
+            row.each_index do |col|
               pdf.move_to [pos_x, pos_y]
-              if qr_code.qrcode.checked?(row, col)
+              if qr_code.qrcode.checked?(index, col)
                 dark_col += 1
               else
                 if dark_col > 0
