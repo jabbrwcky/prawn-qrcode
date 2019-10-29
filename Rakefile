@@ -1,4 +1,4 @@
-# Copyright 2011 Jens Hausherr
+# Copyright 2011 - 2109 Jens Hausherr
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,13 +13,13 @@
 #  limitations under the License.
 
 require 'rake'
-require "rubygems"
-require "rubygems/package_task"
-require "bundler/gem_tasks"
+require 'rubygems'
+require 'rubygems/package_task'
+require 'bundler/gem_tasks'
 
-spec = Gem::Specification.load "prawn-qrcode.gemspec"
+spec = Gem::Specification.load 'prawn-qrcode.gemspec'
 Gem::PackageTask.new(spec).define do |pkg|
-  #pkg.need_zip = true
+  # pkg.need_zip = true
   pkg.need_tar = true
 end
 

@@ -4,3 +4,4 @@
 .DS_Store
 pkg
 Gemfile.lock
+.vscode/

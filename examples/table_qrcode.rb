@@ -1,4 +1,4 @@
-# Copyright 2011 - 2109 Jens Hausherr
+# Copyright 2011 - 2019 Jens Hausherr
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -13,19 +13,23 @@
 #  limitations under the License.
 require 'rubygems'
 require 'prawn'
+require 'prawn/measurement_extensions'
+require 'prawn/table'
 require_relative '../lib/prawn/qrcode'
+require_relative '../lib/prawn/qrcode/table'
 
-qrcode = RQRCode::QRCode.new('https://github.com/jabbrwcky/prawn-qrcode', :size => 5)
+# qrcode = 'https://github.com/jabbrwcky/prawn-qrcode'
 
-Prawn::Document.new(:page_size => 'A4') do
-  text 'Prawn QR Code sample 1: Predefined QR-Code'
-  move_down 10
-  text 'Sample predefined QR-Code (with stroked bounds) Size of QRCode dots: 1pt (1/72 in)'
-  move_down 45
-  render_qr_code(qrcode)
-  move_down 10
-  text 'Sample predefined QR-Code (without stroked bounds) Size of QRCode dots: 1pt (1/72 in)'
-  move_down 45
-  render_qr_code(qrcode, :stroke => false)
-  render_file('prepared.pdf')
+Prawn::Document.new(page_size: 'A4') do
+  font 'Helvetica', style: :bold do
+    text 'QRCode in table'
+  end
+  move_down 5.mm
+  cpos = cursor
+  qr = make_qrcode_cell(content: 'https://github.com/jabbrwcky/prawn-qrcode', extent:72)
+  t = make_table([['URL', 'QRCODE'],
+                  ['https://github.com/jabbrwcky/prawn-qrcode', qr]])
+  t.draw
+  move_down 20
+  render_file('table.pdf')
 end

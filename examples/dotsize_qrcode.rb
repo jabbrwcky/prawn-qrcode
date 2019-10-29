@@ -1,4 +1,4 @@
-# Copyright 2011 Jens Hausherr
+# Copyright 2011 - 2109 Jens Hausherr
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -40,8 +40,8 @@ Prawn::Document.new(page_size: 'A4') do
   print_qr_code(qrcode, pos: [150, cpos], dot: 1.mm, stroke: false)
   font 'Courier', size: 8 do
     text_box "require 'prawn/measurement_extensions'\n\n" +
-     "print_qr_code(qrcode, dot: 1.mm)\n"+
-     "print_qr_code(qrcode, pos: [150,cpos], dot: 1.mm, stroke: false)", at: [320, cpos], height: 200, width: 220
+             "print_qr_code(qrcode, dot: 1.mm)\n" +
+             'print_qr_code(qrcode, pos: [150,cpos], dot: 1.mm, stroke: false)', at: [320, cpos], height: 200, width: 220
   end
 
   move_down 30
@@ -54,7 +54,7 @@ Prawn::Document.new(page_size: 'A4') do
   print_qr_code(qrcode, dot: 1.mm, level: :q)
   font 'Courier', size: 8 do
     text_box "require 'prawn/measurement_extensions'\n\n" +
-     "print_qr_code(qrcode, dot: 1.mm, level: :q)", at: [320, cpos], height: 200, width: 220
+             'print_qr_code(qrcode, dot: 1.mm, level: :q)', at: [320, cpos], height: 200, width: 220
   end
   render_file('dotsize.pdf')
 end

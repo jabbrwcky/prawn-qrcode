@@ -1,0 +1,6 @@
+AllCops:
+  TargetRubyVersion: 2.2
+inherit_from: .rubocop_todo.yml
+
+Style/HashSyntax:
+  EnforcedStyle: ruby19
