@@ -19,11 +19,11 @@ module Prawn
         end
 
         def natural_content_width
-          renderer.extent + @margin * @dot
+          renderer.extent
         end
 
         def natural_content_height
-          renderer.extent + @margin * @dot
+          renderer.extent
         end
 
         def draw_content
