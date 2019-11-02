@@ -1,0 +1,13 @@
+language: ruby
+rvm:
+- 2.4
+- 2.5
+- 2.6
+deploy:
+  provider: rubygems
+  api_key:
+    secure: h4iDtFsWqBJQgkQ9kjCba5cDvdtzW56c40cEU1r8kUY0316Akip5ujHO0s/n3QPJcaVuv7nSIU/4Dy8Xh3YvoCuQE/FesZUpm9gmeCJdIfGIJHHPaqLG5ni2f5x+wg4fOdDVdOjHK7yxi3nOyRimluLzInsn2/zwKMHnqF+0xco=
+  gem: prawn-qrcode
+  on:
+    tags: true
+    repo: jabbrwcky/prawn-qrcode
