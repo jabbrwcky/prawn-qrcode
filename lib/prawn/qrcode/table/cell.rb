@@ -3,17 +3,19 @@ require 'prawn/table/cell'
 module Prawn
   module QRCode
     module Table
-      # QRCode is a table cell that renders a QR coe inside a table
+
+      # QRCode is a table cell that renders a QR code inside a table.
+      # Most users will create a table via the PDF DSL method make_qr_code_cell.
       class Cell < Prawn::Table::Cell
-        QR_OPTIONS = %I[content qr_code renderer level extent pos dot stroke margin align].freeze
+        QR_OPTIONS = %I[content qr_code renderer level mode extent pos dot stroke margin align].freeze
         CELL_OPTS = %I[padding borders border_widths border_colors border_lines colspan rowspan at].freeze
 
         QR_OPTIONS.each { |attr| attr_writer attr }
 
         def initialize(pdf, pos, **options)
-          super(pdf, pos, options.select { |k, _v| CELL_OPTS.include?(k) })
+          super(pdf, pos, options.select { |k, _| CELL_OPTS.include?(k) })
           @margin = 4
-          @options = options.reject { |k, _v| CELL_OPTS.include?(k) }
+          @options = options.reject { |k, _| CELL_OPTS.include?(k) }
           @options.each { |k, v| send("#{k}=", v) }
         end
 
@@ -34,7 +36,7 @@ module Prawn
         end
 
         def qr_code
-          @qr_code, @dot = Prawn::QRCode.min_qrcode(content, **@options) if @qr_code.nil?
+          @qr_code = Prawn::QRCode.min_qrcode(content, **@options) unless defined?(@qr_code)
           @qr_code
         end
       end

@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.platform                  = Gem::Platform::RUBY
   spec.summary                   = 'Print QR Codes in PDF'
   spec.licenses                  = ['Apache License 2.0']
-  spec.files = Dir.glob('{examples,lib}/**/**/*') +
+  spec.files = Dir.glob('{examples,lib,test}/**/**/*') +
                ['Rakefile', 'prawn-qrcode.gemspec']
   spec.require_path              = 'lib'
   spec.required_ruby_version     = '>= 2.2.0'

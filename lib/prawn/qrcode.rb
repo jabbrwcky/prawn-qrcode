@@ -21,9 +21,9 @@ require 'rqrcode'
 # :main: This is an extension for Prawn::Document to simplify rendering QR Codes.
 # The module registers itself as Prawn extension upon loading.
 #
-# *Author*::    Jens Hausherr  (mailto:jabbrwcky@gmail.com)
-# *Copyright*:: Copyright (c) 2011 -2019 Jens Hausherr
-# *License*::   Apache License, Version 2.0
+# @author Jens Hausherr  <jabbrwcky@gmail.com>
+# @copyright Copyright (c) 2011 -2019 Jens Hausherr
+# @license Apache License, Version 2.0
 #
 module Prawn
   module QRCode
@@ -31,14 +31,16 @@ module Prawn
     DEFAULT_DOTSIZE = 1.to_f
 
     # Creates a QRCode with a minimal size to fit the data with the requested error correction level.
+    # @since 0.5.0
     #
-    # content::  The string to render as content of the QR Code
-    # qr_version:: Optional number of modules to use initially. Will use more if input overflows module size (Default: 0)
+    # @param [string] content The string to render as content of the QR Code
+    # @param [Integer] qr_version Optional number of modules to use initially. Will use more if input overflows module size (Default: 0)
+    # @param [symbol] level Optional Error correction level to use. One of: (:l, :m, :h, :q), Defaults to :m
+    # @param [symbol] mode Optional mode. One of (:number, :alphanumeric, :byte_8bit, :kanji), Defaults to :alphanumeric or :byte_8bit
     #
-    # *options:: Named optional parameters
+    # @return [RQRCode::QRCode] QR code that can hold the specified data with the desired error correction level
     #
-    #   +:level+:: Error correction level to use. One of: (:l, :m, :h, :q), Defaults to :m
-    #   +:mode+:: Optional mode. One of (:number, :alphanumeric, :byte_8bit, :kanji), Defaults to :alphanumeric or :byte_8bit
+    # @raise [RQRCodeCore::QRCodeRunTimeError] if the data specified will not fit in the largest QR code (QR version 40) with the given error correction level
     #
     def self.min_qrcode(content, qr_version = 0, level: :m, mode: nil, **)
       qr_version += 1
@@ -49,64 +51,76 @@ module Prawn
     end
 
     # dotsize calculates the required dotsize for a QR code to be rendered with the given extent and the module size
+    # @since 0.5.0
     #
-    # qr_code:: QR code to render
-    # extent:: Size of QR Code given in pt (1 pt == 1/72 in)
-    # margin:: Width of margin (defaults to 4 module sizes)
+    # @param [RQRCode::QRCode] qr_code QR code to render
+    # @param [Integer/Float] extent Size of QR code given in pt (1 pt == 1/72 in)
+    # @param [Integer] margin Width of margin as number of modules (defaults to 4 modules)
+    #
+    # @return [Float] size of dot in pt (1/72 in)
     def self.dotsize(qr_code, extent, margin = 4)
       extent.to_f / (2 * margin + qr_code.modules.length).to_f
     end
 
     # Prints a QR Code to the PDF document. The QR Code creation happens on the fly.
     #
-    # content::  The string to render as content of the QR Code
+    # @param [string] content The string to render as content of the QR Code
+    # @param [symbol] level Error correction level to use. One of: (:l, :m, :h, :q), Defaults to :m
+    # @param [symbol] mode Optional mode. One of (:number, :alphanumeric, :byte_8bit, :kanji), Defaults to :alphanumeric or :byte_8bit
+    # @param [Array] pos  Two-element array containing the position at which the QR-Code should be rendered. Defaults to [0,cursor]
+    # @param [Hash] options additional options that are passed on to Prawn::QRCode::Renderer
     #
-    # *options:: Named optional parameters
+    # @see Renderer
     #
-    #   +:level+:: Error correction level to use. One of: (:l, :m, :h, :q), Defaults to :m
-    #   +:mode+:: Optional mode. One of (:number, :alphanumeric, :byte_8bit, :kanji), Defaults to :alphanumeric or :byte_8bit
-    #   +:pos+:: Two-element array containing the position at which the QR-Code should be rendered. Defaults to [0,cursor]
-    #   +:dot+:: Size of QR Code module/dot. Calculated from extent or defaulting to 1pt
-    #   +:extent+:: Size of QR Code given in pt (1 pt == 1/72 in)
-    #   +:stroke+:: boolean value whether to draw bounds around the QR Code.
-    #             Defaults to true.
-    #   +:margin+:: Size of margin around code in QR-Code modules/dots, Default to 4
-    #   +:align+:: Optional alignment within the current bounding box. Valid values are :left, :right, and :center. If set
-    #             this option overrides the horizontal positioning specified in :pos. Defaults to nil.
-    #   +:debug+:: Optional boolean, renders a coordinate grid around the QRCode if true (uses Prawn#stroke_axis)
-    #
-    def print_qr_code(content, level: :m, mode: nil, pos: [0, cursor], stroke: true, margin: 4, **options)
+    def print_qr_code(content, level: :m, mode: nil, pos: [0, cursor], **options)
       qr_code = Prawn::QRCode.min_qrcode(content, level: level, mode: mode)
       render_qr_code(qr_code, pos: pos, stroke: stroke, margin: margin, **options)
     end
 
-    # Renders a prepared QR Code (RQRCode::QRCode) object.
+    # Renders a prepared QR code (RQRCode::QRCode) int the pdf.
+    # @since 0.5.0
     #
-    # qr_code:: The QR Code (an RQRCode::QRCode) to render
+    # @param [RQRCode::QRCode] qr_code The QR code (an RQRCode::QRCode) to render
+    # @param [Hash] options additional options that are passed on to Prawn::QRCode::Renderer
     #
-    # *options:: Named optional parameters
-    #   +:extent+:: Size of QR Code given in pt (1 pt == 1/72 in)
-    #   +:pos+:: Two-element array containing the position at which the QR-Code should be rendered. Defaults to [0,cursor]
-    #   +:dot+:: Size of QR Code module/dot. Calculated from extent or defaulting to 1pt
-    #   +:stroke+:: boolean value whether to draw bounds around the QR Code. Defaults to true.
-    #   +:margin+:: Size of margin around code in QR-Code modules/dots, Default to 4
-    #   +:align+:: Optional alignment within the current bounding box. Valid values are :left, :right, and :center. If set
-    #             This option overrides the horizontal positioning specified in :pos. Defaults to nil.
-    #   +:debug+:: Optional boolean, renders a coordinate grid around the QRCode if true (uses Prawn#stroke_axis)
+    # @see Renderer
     #
     def render_qr_code(qr_code, **options)
       renderer = Renderer.new(qr_code, **options)
       renderer.render(self)
     end
 
+    # QRCodeError is raised on errors specific to Prawn::QRCode
+    # @since 0.5.0
     class QRCodeError < StandardError; end
 
+    # Renderer is responsible for actually rendering a QR code to pdf
+    # @since 0.5.0
     class Renderer
       attr_accessor :qr_code
 
-      RENDER_OPTS = %I[dot pos stroke foreground_color background_color stroke_color margin align debug extent level].freeze
+      RENDER_OPTS = %I[dot pos stroke foreground_color background_color stroke_color margin align debug extent].freeze
       RENDER_OPTS.each { |attr| attr_writer attr }
 
+      # creates a new renderer for the given QR code
+      #
+      # @param qr_code [RQRCode::QRCode] QR code to render
+      # @param [Hash] options additional options
+      # @option options [Float] :dot size of a dot in pt (1/72 in)
+      # @option options [Array] :pos Two-element array containing the position at which the QR-Code should be rendered. Defaults to [0,cursor]
+      # @option options [bool] :stroke whether to draw bounds around the QR Code. Defaults to true.
+      # @option options [string] :foreground_color 6-digit hex string specifying foreground color; default: '000000'
+      # @option options [string] :background_color 6-digit hex string specifying background color; default: 'FFFFFF'
+      # @option options [string] :stroke_color 6-digit hex string specifying stroke color; default: '000000'
+      # @option options [integer] :margin number of modules as margin around QRcode (default: 4)
+      # @option options [float] :extent overall width/height of QR code in pt (1/72 in)
+      # @option options [bool] :debug render a coordinate grid around the QRCode if true (uses Prawn#stroke_axis)
+      # @option options [symbol] :align alignment within the current bounding box. Valid values are :left, :right, and :center. If set
+      #                          this option overrides the horizontal positioning specified in :pos. Defaults to nil.
+      #
+      # Options :dot and :extent are mutually exclusive.
+      #
+      # @raise [QRCodeError] if both extent and dot are specified.
       def initialize(qr_code, **options)
         raise QRCodeError, 'Specify either :dot or :extent, not both' if options.key?(:dot) && options.key?(:extent)
 
