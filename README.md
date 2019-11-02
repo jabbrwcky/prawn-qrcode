@@ -13,7 +13,7 @@ Prawn/QRCode is a Prawn (>= 1.0.0) extension to simplify rendering of QR Codes*.
 ## Install
 
 ```bash
-$ gem install prawn-qrcode
+gem install prawn-qrcode
 ```
 
 ## Usage
