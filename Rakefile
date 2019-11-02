@@ -13,9 +13,11 @@
 #  limitations under the License.
 
 require 'rake'
-require 'rubygems'
-require 'rubygems/package_task'
-require 'bundler/gem_tasks'
+require "rubygems"
+require "rubygems/package_task"
+require "bundler/gem_tasks"
+require "rake/testtask"
+
 
 spec = Gem::Specification.load 'prawn-qrcode.gemspec'
 Gem::PackageTask.new(spec).define do |pkg|
@@ -23,6 +25,12 @@ Gem::PackageTask.new(spec).define do |pkg|
   pkg.need_tar = true
 end
 
-task :default => :package
+Rake::TestTask.new(:test) do |t|
+  t.libs << "test"
+  t.libs << "lib"
+  t.test_files = FileList["test/test_*.rb"]
+end
+
+task :default => :test
 
 task :clean => :clobber_package
