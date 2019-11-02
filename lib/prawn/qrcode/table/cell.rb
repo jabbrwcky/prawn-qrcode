@@ -5,17 +5,16 @@ module Prawn
     module Table
       # QRCode is a table cell that renders a QR coe inside a table
       class Cell < Prawn::Table::Cell
-
-        QR_OPTIONS = %I[content qr_code renderer level extent pos dot stroke margin align]
-        CELL_OPTS = %I[padding borders border_widths border_colors border_lines colspan rowspan at]
+        QR_OPTIONS = %I[content qr_code renderer level extent pos dot stroke margin align].freeze
+        CELL_OPTS = %I[padding borders border_widths border_colors border_lines colspan rowspan at].freeze
 
         QR_OPTIONS.each { |attr| attr_writer attr }
 
         def initialize(pdf, pos, **options)
-          super(pdf,pos,options.select{ |k,v|  CELL_OPTS.include?(k) })
+          super(pdf, pos, options.select { |k, _v| CELL_OPTS.include?(k) })
           @margin = 4
-          @options=options.reject{|k,v|  CELL_OPTS.include?(k) }
-          @options.each{ |k,v| send("#{k}=", v)}
+          @options = options.reject { |k, _v| CELL_OPTS.include?(k) }
+          @options.each { |k, v| send("#{k}=", v) }
         end
 
         def natural_content_width

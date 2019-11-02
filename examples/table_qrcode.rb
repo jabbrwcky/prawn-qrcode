@@ -26,8 +26,8 @@ Prawn::Document.new(page_size: 'A4') do
   end
   move_down 5.mm
   cpos = cursor
-  qr = make_qrcode_cell(content: 'https://github.com/jabbrwcky/prawn-qrcode', extent:72)
-  t = make_table([['URL', 'QRCODE'],
+  qr = make_qrcode_cell(content: 'https://github.com/jabbrwcky/prawn-qrcode', extent: 72)
+  t = make_table([%w[URL QRCODE],
                   ['https://github.com/jabbrwcky/prawn-qrcode', qr]])
   t.draw
   move_down 20

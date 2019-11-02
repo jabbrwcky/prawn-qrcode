@@ -63,7 +63,7 @@ module Prawn
     #
     # *options:: Named optional parameters
     #
-    #   +:level+:: Error correction level to use. One of: (:l, :m, :h, :q), Defaults to :m   
+    #   +:level+:: Error correction level to use. One of: (:l, :m, :h, :q), Defaults to :m
     #   +:mode+:: Optional mode. One of (:number, :alphanumeric, :byte_8bit, :kanji), Defaults to :alphanumeric or :byte_8bit
     #   +:pos+:: Two-element array containing the position at which the QR-Code should be rendered. Defaults to [0,cursor]
     #   +:dot+:: Size of QR Code module/dot. Calculated from extent or defaulting to 1pt
@@ -74,8 +74,8 @@ module Prawn
     #   +:align+:: Optional alignment within the current bounding box. Valid values are :left, :right, and :center. If set
     #             this option overrides the horizontal positioning specified in :pos. Defaults to nil.
     #   +:debug+:: Optional boolean, renders a coordinate grid around the QRCode if true (uses Prawn#stroke_axis)
-     #
-    def print_qr_code(content, level: :m, mode:nil, pos: [0, cursor], stroke: true, margin: 4, **options)
+    #
+    def print_qr_code(content, level: :m, mode: nil, pos: [0, cursor], stroke: true, margin: 4, **options)
       qr_code = Prawn::QRCode.min_qrcode(content, level: level, mode: mode)
       render_qr_code(qr_code, pos: pos, stroke: stroke, margin: margin, **options)
     end
@@ -104,14 +104,15 @@ module Prawn
     class Renderer
       attr_accessor :qr_code
 
-      RENDER_OPTS = %I[dot pos stroke foreground_color background_color stroke_color margin align debug extent level]
+      RENDER_OPTS = %I[dot pos stroke foreground_color background_color stroke_color margin align debug extent level].freeze
       RENDER_OPTS.each { |attr| attr_writer attr }
 
       def initialize(qr_code, **options)
-        raise QRCodeError, "Specify either :dot or :extent, not both" if options.has_key?(:dot) && options.has_key?(:extent)
+        raise QRCodeError, 'Specify either :dot or :extent, not both' if options.key?(:dot) && options.key?(:extent)
+
         @stroke = true
         @qr_code = qr_code
-        options.select{ |k,v| RENDER_OPTS.include?(k) }.each { |k, v| send("#{k}=", v) }
+        options.select { |k, _v| RENDER_OPTS.include?(k) }.each { |k, v| send("#{k}=", v) }
       end
 
       def dot
@@ -120,9 +121,7 @@ module Prawn
         @dot
       end
 
-      def stroke
-        @stroke
-      end
+      attr_reader :stroke
 
       def foreground_color
         @foreground_color ||= '000000'

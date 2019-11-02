@@ -39,8 +39,8 @@ Prawn::Document.new(page_size: 'A4') do
   print_qr_code(qrcode, dot: 1.mm)
   print_qr_code(qrcode, pos: [150, cpos], dot: 1.mm, stroke: false)
   font 'Courier', size: 8 do
-    text_box "require 'prawn/measurement_extensions'\n\n" +
-             "print_qr_code(qrcode, dot: 1.mm)\n" +
+    text_box "require 'prawn/measurement_extensions'\n\n" \
+             "print_qr_code(qrcode, dot: 1.mm)\n" \
              'print_qr_code(qrcode, pos: [150,cpos], dot: 1.mm, stroke: false)', at: [320, cpos], height: 200, width: 220
   end
 
@@ -53,7 +53,7 @@ Prawn::Document.new(page_size: 'A4') do
   cpos = cursor
   print_qr_code(qrcode, dot: 1.mm, level: :q)
   font 'Courier', size: 8 do
-    text_box "require 'prawn/measurement_extensions'\n\n" +
+    text_box "require 'prawn/measurement_extensions'\n\n" \
              'print_qr_code(qrcode, dot: 1.mm, level: :q)', at: [320, cpos], height: 200, width: 220
   end
   render_file('dotsize.pdf')
