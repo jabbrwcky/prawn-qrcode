@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.5.1
+
+* Bugfix: margin was not passed on to renderer in print_qr_code (#27) (mamhoff)
+
 ## 0.5.0
 
 * Add support for QRCode table cells for prawn/table (#14)
