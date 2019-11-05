@@ -74,7 +74,7 @@ module Prawn
     #
     def print_qr_code(content, level: :m, mode: nil, pos: [0, cursor], **options)
       qr_code = Prawn::QRCode.min_qrcode(content, level: level, mode: mode)
-      render_qr_code(qr_code, pos: pos, stroke: stroke, margin: margin, **options)
+      render_qr_code(qr_code, pos: pos, **options)
     end
 
     # Renders a prepared QR code (RQRCode::QRCode) int the pdf.
