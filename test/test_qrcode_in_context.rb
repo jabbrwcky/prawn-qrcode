@@ -7,4 +7,12 @@ class TestQrcodeInContext < Minitest::Test
     context = Prawn::Document.new
     assert(context.print_qr_code('HELOWORLD', margin: 0))
   end
+  def test_render_with_alignment
+  	context = Prawn::Document.new
+  	left = context.render_qr_code('HELLOWORLD', align: :left)
+  	center = context.render_qr_code('HELLOWORLD', align: :center)
+  	right = context.render_qr_code('HELLOWORLD', align: :right)
+  	assert(left.anchor[0] < center.anchor[0])
+  	assert(center.anchor[0] < right.anchor[0])
+  end
 end
