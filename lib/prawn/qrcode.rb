@@ -166,11 +166,11 @@ module Prawn
         rlim = bounding_box.right
         case @align
         when :center
-          @point[0] = (rlim / 2) - (extent / 2)
+          @pos[0] = (rlim / 2) - (extent / 2)
         when :right
-          @point[0] = rlim - extent
+          @pos[0] = rlim - extent
         when :left
-          @point[0] = 0
+          @pos[0] = 0
         end
       end
 
@@ -178,6 +178,9 @@ module Prawn
       def render(pdf)
         pdf.fill_color background_color
 
+        pos(pdf) # make sure the @pos attribute is set before calling align
+        align(pdf.bounds)
+        
         pdf.bounding_box(pos(pdf), width: extent, height: extent) do |_box|
           pdf.fill_color foreground_color
           margin_dist = margin * dot
