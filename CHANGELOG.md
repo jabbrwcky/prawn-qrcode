@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.5.2
+
+* Fix align before render (#33) (mishaschwartz)
+
 ## 0.5.1
 
 * Bugfix: margin was not passed on to renderer in print_qr_code (#27) (mamhoff)
