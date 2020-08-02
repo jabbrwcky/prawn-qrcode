@@ -39,7 +39,7 @@ Gem::Specification.new do |spec|
   Prawn/QRCode simplifies the generation and rendering of QRCodes in Prawn PDF documents.
 END_DESC
 
-  spec.add_dependency('prawn', '>=1')
+  spec.add_dependency('prawn', '2.3.0')
   spec.add_dependency('rqrcode', '>=1.0.0')
 
   spec.add_development_dependency 'bundler', '~> 2.0'
