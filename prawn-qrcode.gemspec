@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
     '--main' << 'README.md' << '-q'
   spec.authors                   = ['Jens Hausherr']
   spec.email                     = ['jabbrwcky@gmail.com']
-  spec.homepage                   = 'http://github.com/jabbrwcky/prawn-qrcode'
+  spec.homepage                   = 'https://github.com/jabbrwcky/prawn-qrcode'
 
   spec.description                = <<END_DESC
   Prawn/QRCode simplifies the generation and rendering of QRCodes in Prawn PDF documents.
