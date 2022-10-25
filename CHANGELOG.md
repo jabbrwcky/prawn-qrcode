@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.6.0
+
+* Fix ruby 3.0 param error (#114) (nukturnal)
+* gemspec: Use https for the homepage directive (#82) (olleolle)
+
 ## 0.5.2
 
 * Fix align before render (#33) (mishaschwartz)
