@@ -19,7 +19,7 @@ module Prawn
       #
       # @return [Prawn::QRCode::Table::Cell] table cell instance for Prawn::Table
       def make_qrcode_cell(**options)
-        Prawn::QRCode::Table::Cell.new(self, [0, cursor], options)
+        Prawn::QRCode::Table::Cell.new(self, [0, cursor], **options)
       end
     end
   end
