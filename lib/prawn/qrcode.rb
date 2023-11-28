@@ -14,7 +14,7 @@
 #  limitations under the License.
 #++
 require 'prawn'
-require 'rqrcode'
+require 'rqrcode_core'
 
 # :title: Prawn/QRCode
 #
@@ -38,13 +38,13 @@ module Prawn
     # @param [symbol] level Optional Error correction level to use. One of: (:l, :m, :h, :q), Defaults to :m
     # @param [symbol] mode Optional mode. One of (:number, :alphanumeric, :byte_8bit, :kanji), Defaults to :alphanumeric or :byte_8bit
     #
-    # @return [RQRCode::QRCode] QR code that can hold the specified data with the desired error correction level
+    # @return [RQRCodeCore::QRCode] QR code that can hold the specified data with the desired error correction level
     #
     # @raise [RQRCodeCore::QRCodeRunTimeError] if the data specified will not fit in the largest QR code (QR version 40) with the given error correction level
     #
     def self.min_qrcode(content, qr_version = 0, level: :m, mode: nil, **)
       qr_version += 1
-      RQRCode::QRCode.new(content, size: qr_version, level: level, mode: mode)
+      RQRCodeCore::QRCode.new(content, size: qr_version, level: level, mode: mode)
     rescue RQRCodeCore::QRCodeRunTimeError
       retry if qr_version < 40
       raise
@@ -53,7 +53,7 @@ module Prawn
     # dotsize calculates the required dotsize for a QR code to be rendered with the given extent and the module size
     # @since 0.5.0
     #
-    # @param [RQRCode::QRCode] qr_code QR code to render
+    # @param [RQRCodeCore::QRCode] qr_code QR code to render
     # @param [Integer/Float] extent Size of QR code given in pt (1 pt == 1/72 in)
     # @param [Integer] margin Width of margin as number of modules (defaults to 4 modules)
     #
@@ -77,10 +77,10 @@ module Prawn
       render_qr_code(qr_code, pos: pos, **options)
     end
 
-    # Renders a prepared QR code (RQRCode::QRCode) int the pdf.
+    # Renders a prepared QR code (RQRCodeCore::QRCode) int the pdf.
     # @since 0.5.0
     #
-    # @param [RQRCode::QRCode] qr_code The QR code (an RQRCode::QRCode) to render
+    # @param [RQRCodeCore::QRCode] qr_code The QR code (an RQRCodeCore::QRCode) to render
     # @param [Hash] options additional options that are passed on to Prawn::QRCode::Renderer
     #
     # @see Renderer
@@ -104,7 +104,7 @@ module Prawn
 
       # creates a new renderer for the given QR code
       #
-      # @param qr_code [RQRCode::QRCode] QR code to render
+      # @param qr_code [RQRCodeCore::QRCode] QR code to render
       # @param [Hash] options additional options
       # @option options [Float] :dot size of a dot in pt (1/72 in)
       # @option options [Array] :pos Two-element array containing the position at which the QR-Code should be rendered. Defaults to [0,cursor]
@@ -180,7 +180,7 @@ module Prawn
 
         pos(pdf) # make sure the @pos attribute is set before calling align
         align(pdf.bounds)
-        
+
         pdf.bounding_box(pos(pdf), width: extent, height: extent) do |_box|
           pdf.fill_color foreground_color
           margin_dist = margin * dot
@@ -195,7 +195,7 @@ module Prawn
 
             row.each_index do |col|
               pdf.move_to [pos_x, pos_y]
-              if qr_code.qrcode.checked?(index, col)
+              if qr_code.checked?(index, col)
                 dark_col += 1
               else
                 if dark_col > 0
