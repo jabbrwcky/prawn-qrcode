@@ -47,5 +47,5 @@ END_DESC
   spec.add_development_dependency 'minitest', '~> 5.12', '>= 5.12.2'
   spec.add_development_dependency 'prawn-table', '~> 0.2.2'
   spec.add_development_dependency 'rake', '~> 13.0'
-  spec.add_development_dependency 'rubocop', '~> 1.50.2'
+  spec.add_development_dependency 'rubocop', '~> 1.62.0'
 end
