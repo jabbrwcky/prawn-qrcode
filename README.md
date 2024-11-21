@@ -1,3 +1,4 @@
+
 # Prawn/QRCode
 
 A simple extension to generate and/or render QRCodes for Prawn PDFs
