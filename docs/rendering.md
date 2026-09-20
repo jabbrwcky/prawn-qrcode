@@ -84,3 +84,14 @@ batched, while a pure refactoring of the emitted operators does not.
 Asserting on the operators themselves would be counterproductive here: the optimization
 above rewrote the content stream completely (690 operators down to 149 for a version 1
 code) without moving a single module.
+
+`test/test_roundtrip.rb` adds the layer below that: it rasterizes the generated PDF with
+`pdftoppm` and decodes the image with `zbarimg`, asserting the payload comes back
+unchanged. That covers what inspecting the drawing operations cannot — whether the code
+actually scans. Both tools are invoked as external commands, and the tests skip when
+either is missing, so a bare checkout still runs `rake test`; CI installs them.
+
+Those tests render at an explicit extent rather than at the default dot size. At 1 pt per
+module a 29 module code occupies 0.4 in, and whether that still decodes depends on the
+decoder's sampling heuristics rather than on this library: it reads at 300 dpi but not at
+150 or 600. Pick a size well above that if the output is meant to be scanned.
