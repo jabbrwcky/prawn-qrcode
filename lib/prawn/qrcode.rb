@@ -209,7 +209,7 @@ module Prawn
           end
 
           if stroke
-            pdf.fill_color stroke_color
+            pdf.stroke_color stroke_color
             pdf.stroke_bounds
           end
           pdf.stroke_axis(at: [-1, -1], negative_axes_length: 0, color: '0C0C0C', step_length: 50) if debug
