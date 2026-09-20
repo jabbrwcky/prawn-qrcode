@@ -75,7 +75,12 @@ in the document's current stroke color.
 
 ## Verifying changes to the renderer
 
-`test_rendered_output_covers_exactly_the_dark_modules` maps the rectangles in the content
-stream back to module coordinates and compares them against the QR matrix, so a change
-that shifts, drops, or duplicates modules fails the suite regardless of how the rectangles
-are batched.
+`test_rendered_output_covers_exactly_the_dark_modules` reads the painted rectangles back
+out of the generated PDF with [pdf-inspector](https://github.com/prawnpdf/pdf-inspector),
+maps them to module coordinates and compares them against the QR matrix. A change that
+shifts, drops or duplicates modules fails the suite regardless of how the rectangles are
+batched, while a pure refactoring of the emitted operators does not.
+
+Asserting on the operators themselves would be counterproductive here: the optimization
+above rewrote the content stream completely (690 operators down to 149 for a version 1
+code) without moving a single module.
