@@ -179,33 +179,14 @@ module Prawn
 
         pdf.bounding_box(pos(pdf), width: extent, height: extent) do |_box|
           pdf.fill_color foreground_color
-          margin_dist = margin * dot
 
-          m = qr_code.modules
+          dot_size = dot
+          margin_dist = margin * dot_size
+          pos_y = margin_dist + qr_code.modules.length * dot_size
 
-          pos_y = margin_dist + m.length * dot
-
-          m.each_with_index do |row, index|
-            pos_x = margin_dist
-            dark_col = 0
-
-            row.each_index do |col|
-              pdf.move_to [pos_x, pos_y]
-              if qr_code.checked?(index, col)
-                dark_col += 1
-              else
-                if dark_col > 0
-                  dark_col_extent = dark_col * dot
-                  pdf.fill { pdf.rectangle([pos_x - dark_col_extent, pos_y], dark_col_extent, dot) }
-                  dark_col = 0
-                end
-              end
-              pos_x += dot
-            end
-
-            pdf.fill { pdf.rectangle([pos_x - dark_col * dot, pos_y], dot * dark_col, dot) } if dark_col > 0
-
-            pos_y -= dot
+          qr_code.modules.each do |row|
+            render_row(pdf, row, margin_dist, pos_y, dot_size)
+            pos_y -= dot_size
           end
 
           if stroke
@@ -219,6 +200,27 @@ module Prawn
       private
 
       attr_reader :debug
+
+      # Paints the dark modules of a single row. Horizontally adjacent modules are
+      # combined into one rectangle and the whole row is painted by one fill operation.
+      def render_row(pdf, row, margin_dist, pos_y, dot_size)
+        pdf.fill do
+          pos_x = margin_dist
+          dark = 0
+
+          row.each do |module_dark|
+            if module_dark
+              dark += 1
+            elsif dark > 0
+              pdf.rectangle([pos_x - dark * dot_size, pos_y], dark * dot_size, dot_size)
+              dark = 0
+            end
+            pos_x += dot_size
+          end
+
+          pdf.rectangle([pos_x - dark * dot_size, pos_y], dark * dot_size, dot_size) if dark > 0
+        end
+      end
 
       def pos(pdf)
         @pos ||= [0, pdf.cursor]
