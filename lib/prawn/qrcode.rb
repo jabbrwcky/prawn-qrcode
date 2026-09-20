@@ -158,10 +158,6 @@ module Prawn
         @extent
       end
 
-      def margin_size
-        margin * dot
-      end
-
       def align(bounding_box)
         rlim = bounding_box.right
         case @align
