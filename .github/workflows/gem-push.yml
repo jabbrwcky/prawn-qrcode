@@ -3,6 +3,12 @@ name: Publish Gem
 on:
   push:
     tags: [ "v*" ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version tag to release (e.g. v0.6.0)'
+        required: true
+        type: string
 
 jobs:
   build:
@@ -14,6 +20,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v7
+      with:
+        ref: ${{ github.event.inputs.tag || github.ref }}
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
