@@ -30,6 +30,11 @@ Rake::TestTask.new(:test) do |t|
   t.test_files = FileList['test/test_*.rb']
 end
 
+desc 'Measure QR code rendering speed and PDF content stream size'
+task :benchmark do
+  ruby 'benchmark/render.rb'
+end
+
 task :default => :test
 
 task :clean => :clobber_package
