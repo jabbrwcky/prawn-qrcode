@@ -25,4 +25,14 @@ class TestRenderer < Minitest::Test
   def test_conflicting_dotsize_and_extent
     assert_raises(Prawn::QRCode::QRCodeError) { Prawn::QRCode::Renderer.new(@qrcode, dot: 3, extent: 72) }
   end
+
+  def test_stroke_color_is_applied_to_the_stroke
+    pdf = Prawn::Document.new(page_size: 'A4')
+    pdf.render_qr_code(@qrcode, stroke_color: '0000FF')
+
+    # SCN (upper case) sets the stroking color, scn the non-stroking (fill) color.
+    stroking_colors = pdf.page.content.stream.filtered_stream.lines.grep(/SCN/).map(&:strip)
+
+    assert_includes(stroking_colors, '0.0 0.0 1.0 SCN')
+  end
 end
