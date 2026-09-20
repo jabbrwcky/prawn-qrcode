@@ -15,7 +15,7 @@ require 'rubygems'
 require 'prawn'
 require_relative '../lib/prawn/qrcode'
 
-qrcode = RQRCode::QRCode.new('https://github.com/jabbrwcky/prawn-qrcode', size: 5)
+qrcode = RQRCodeCore::QRCode.new('https://github.com/jabbrwcky/prawn-qrcode', size: 5)
 
 Prawn::Document.new(page_size: 'A4') do
   text 'Prawn QR Code sample 1: Predefined QR-Code'

@@ -8,7 +8,7 @@ module Prawn
       #
       # @param [Hash] options for creating table cell
       # @option [String] :content string content to render as QR code
-      # @option [RQRCode::QRCode] :qr_code qr_code object to render
+      # @option [RQRCodeCore::QRCode] :qr_code qr_code object to render
       # @option [Prawn::QRCode::Renderer] :renderer initialized renderer (contains qr_code)
       #
       # The table cell will create a QRCode and Renderer on demand, all necessary options will be passed through
