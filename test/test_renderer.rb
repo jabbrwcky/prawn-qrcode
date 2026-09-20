@@ -1,4 +1,5 @@
 require 'minitest/autorun'
+require 'pdf/inspector'
 require_relative '../lib/prawn/qrcode.rb'
 
 class TestRenderer < Minitest::Test
@@ -30,10 +31,9 @@ class TestRenderer < Minitest::Test
     pdf = Prawn::Document.new(page_size: 'A4')
     pdf.render_qr_code(@qrcode, stroke_color: '0000FF')
 
-    # SCN (upper case) sets the stroking color, scn the non-stroking (fill) color.
-    stroking_colors = pdf.page.content.stream.filtered_stream.lines.grep(/SCN/).map(&:strip)
+    colors = PDF::Inspector::Graphics::Color.analyze(pdf.render)
 
-    assert_includes(stroking_colors, '0.0 0.0 1.0 SCN')
+    assert_equal([0.0, 0.0, 1.0], colors.stroke_color)
   end
 
   def test_rendered_output_covers_exactly_the_dark_modules
@@ -50,20 +50,21 @@ class TestRenderer < Minitest::Test
     (0...size).flat_map { |row| (0...size).map { |col| [row, col] if @qrcode.checked?(row, col) } }.compact.sort
   end
 
-  # Maps the rectangles painted into the content stream back to module coordinates.
-  # With dot size 1 and no margin a module is exactly 1 pt, so the rectangles can be
-  # anchored on the top left dark module of the finder pattern.
+  # Maps the painted rectangles back to module coordinates. With dot size 1 and no
+  # margin a module is exactly 1 pt, so the rectangles can be anchored on the top left
+  # dark module of the finder pattern. Rectangle points are the lower left corner.
   def painted_modules(pdf)
-    rects = pdf.page.content.stream.filtered_stream
-               .scan(/([\d.-]+) ([\d.-]+) ([\d.-]+) ([\d.-]+) re/)
-               .map { |rect| rect.map(&:to_f) }
-    left = rects.map { |x, _y, _w, _h| x }.min
-    top = rects.map { |_x, y, _w, h| y + h }.max
+    rects = PDF::Inspector::Graphics::Rectangle.analyze(pdf.render).rectangles
+    left = rects.map { |rect| rect[:point].first }.min
+    top = rects.map { |rect| rect[:point].last + rect[:height] }.max
 
-    rects.flat_map do |x, y, w, h|
-      row = (top - (y + h)).round
+    rects.flat_map do |rect|
+      x, y = rect[:point]
+      row = (top - (y + rect[:height])).round
       col = (x - left).round
-      h.round.times.flat_map { |dy| w.round.times.map { |dx| [row + dy, col + dx] } }
+      rect[:height].round.times.flat_map do |dy|
+        rect[:width].round.times.map { |dx| [row + dy, col + dx] }
+      end
     end.uniq.sort
   end
 end
