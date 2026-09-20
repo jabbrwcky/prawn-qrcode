@@ -25,6 +25,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+    - name: Install QR decoding tools
+      # Without these the round trip decode tests skip instead of running.
+      run: sudo apt-get update && sudo apt-get install -y poppler-utils zbar-tools
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
