@@ -43,7 +43,7 @@ END_DESC
   spec.add_dependency('rqrcode_core')
 
   spec.add_development_dependency 'rubygems-tasks', '~> 0.3.0'
-  spec.add_development_dependency 'minitest', '~> 5.12', '>= 5.12.2'
+  spec.add_development_dependency 'minitest', '>= 5.12.2', '~> 6.0'
   spec.add_development_dependency 'pdf-inspector', '~> 1.3'
   spec.add_development_dependency 'prawn-table', '~> 0.2.2'
   spec.add_development_dependency 'rake', '~> 13.0'
